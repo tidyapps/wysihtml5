@@ -231,7 +231,7 @@ wysihtml5.dom.parse = (function() {
     if (setAttributes) {
       attributes = wysihtml5.lang.object(setAttributes).clone();
     }
-    
+
     if (checkAttributes) {
       for (attributeName in checkAttributes) {
         method = attributeCheckMethods[checkAttributes[attributeName]];
@@ -375,14 +375,17 @@ wysihtml5.dom.parse = (function() {
   // ------------ attribute checks ------------ \\
   var attributeCheckMethods = {
     url: (function() {
-      var REG_EXP = /^https?:\/\//i;
       return function(attributeValue) {
-        if (!attributeValue || !attributeValue.match(REG_EXP)) {
-          return null;
+        if (!attributeValue) {
+          return "";
         }
-        return attributeValue.replace(REG_EXP, function(match) {
-          return match.toLowerCase();
-        });
+
+        var parser = document.createElement('a');
+        parser.href = attributeValue;
+        if (   parser.protocol == 'http:'
+            || parser.protocol == 'https:'
+            || parser.protocol == 'ftp:'
+        ) return attributeValue;
       };
     })(),
 
@@ -399,14 +402,18 @@ wysihtml5.dom.parse = (function() {
     })(),
 
     href: (function() {
-      var REG_EXP = /^(\/|https?:\/\/|mailto:)/i;
       return function(attributeValue) {
-        if (!attributeValue || !attributeValue.match(REG_EXP)) {
-          return null;
+        if (!attributeValue) {
+          return "";
         }
-        return attributeValue.replace(REG_EXP, function(match) {
-          return match.toLowerCase();
-        });
+
+        var parser = document.createElement('a');
+        parser.href = attributeValue;
+        if (   parser.protocol == 'http:'
+            || parser.protocol == 'https:'
+            || parser.protocol == 'mailto:'
+            || parser.protocol == 'ftp:'
+        ) return attributeValue;
       };
     })(),
     
