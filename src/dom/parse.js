@@ -231,6 +231,11 @@ wysihtml5.dom.parse = (function() {
     if (setAttributes) {
       attributes = wysihtml5.lang.object(setAttributes).clone();
     }
+    
+    idAttribute = _getAttribute(oldNode, "id");
+    if (typeof(idAttribute) === "string") {
+      attributes["id"] = idAttribute;
+    }
 
     if (checkAttributes) {
       for (attributeName in checkAttributes) {
